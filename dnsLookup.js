@@ -1,16 +1,44 @@
+require('dotenv').config();
+
+const fs = require('fs');
 const dns = require('dns');
 const axios = require('axios');
+const csvParser = require('csv-parser');
 
-// Remove the HTTP and HTTPS. The domain should say something like www.domain.com or domain.com
-const domains = [
-  'www.example-domain.com',
-  'www.example-domain.com',
-  'www.example-domain.com',
-  'www.example-domain.com',
-];
+const inputFile = 'example.csv';
 
+function removeHttpProtocol(url) {
+  const cleanedUrl = url.replace(/^(https?:\/\/)/, '');
+  return `${cleanedUrl}`;
+}
 
-const ipInfoToken = 'TOKEN'; // Replace with your IPinfo API token
+function getDomainsFromCSV() {
+  return new Promise((resolve) => {
+    let rowIndex = 0;
+    let cleanedDomains = [];
+
+    fs.createReadStream(inputFile)
+      .pipe(csvParser({ headers: false }))
+      .on('data', (row) => {
+        rowIndex++;
+
+        // Skip the header row
+        if (rowIndex === 1) {
+          return;
+        }
+
+        const domain = row[0];
+        const cleanedDomain = removeHttpProtocol(domain);
+        cleanedDomains.push(cleanedDomain);
+      })
+      .on('end', () => {
+        resolve(cleanedDomains);
+      });
+  });
+}
+
+// const ipInfoToken = 'TOKEN'; // Replace with your IPinfo API token
+const ipInfoToken = process.env.IPINFO_TOKEN;
 
 const lookupA = (domain) => {
   return new Promise((resolve, reject) => {
@@ -32,6 +60,8 @@ const getIPinfo = async (ip) => {
 };
 
 const main = async () => {
+  const domains = await getDomainsFromCSV();
+
   for (const domain of domains) {
     console.log(`\nProcessing domain: ${domain}`);
     try {
