@@ -5,7 +5,7 @@ const dns = require('dns');
 const axios = require('axios');
 const csvParser = require('csv-parser');
 
-const inputFile = 'example.csv';
+const inputFile = 'input.csv';
 
 function removeHttpProtocol(url) {
   const cleanedUrl = url.replace(/^(https?:\/\/)/, '');
