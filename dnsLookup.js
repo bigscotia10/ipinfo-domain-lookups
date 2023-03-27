@@ -37,7 +37,7 @@ function getDomainsFromCSV() {
   });
 }
 
-// const ipInfoToken = 'TOKEN'; // Replace with your IPinfo API token
+// const ipInfoToken = 'ADD TOKEN'; // Replace with your IPinfo API token
 const ipInfoToken = process.env.IPINFO_TOKEN;
 
 const lookupA = (domain) => {
@@ -62,6 +62,8 @@ const getIPinfo = async (ip) => {
 const main = async () => {
   const domains = await getDomainsFromCSV();
 
+  let domainOrgMap = {};
+
   for (const domain of domains) {
     console.log(`\nProcessing domain: ${domain}`);
     try {
@@ -71,14 +73,29 @@ const main = async () => {
 
       for (const ip of aRecords) {
         const ipInfo = await getIPinfo(ip);
-        if (ipInfo) {
-          console.log(`IPinfo "org" for ${ip}: ${ipInfo.org}`);
+        if (ipInfo && !domainOrgMap[domain]) {
+          const orgWithoutAS = ipInfo.org.replace(/AS\d+\s*/, '');
+          console.log(`IPinfo "org" for ${ip}: ${orgWithoutAS}`);
+          domainOrgMap[domain] = orgWithoutAS;
         }
       }
     } catch (error) {
       console.error(`Error fetching A records for ${domain}:`, error.message);
     }
   }
+
+  let csvData = "Domain,Org\n";
+  for (const [domain, org] of Object.entries(domainOrgMap)) {
+    csvData += `${domain},"${org}"\n`;
+  }
+
+  fs.writeFile("output.csv", csvData, (err) => {
+    if (err) {
+      console.error("Error writing CSV file:", err.message);
+    } else {
+      console.log("\nCSV file successfully saved.");
+    }
+  });
 };
 
 main();
