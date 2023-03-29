@@ -1,0 +1,10 @@
+DOMAIN,WAF
+remote.edg.io,None
+docs.edg.io,Edgio WAF
+forum.edg.io,Unknown or no WAF detected
+interact.edg.io,Unknown or no WAF detected
+lessonlystorage.edg.io,None
+status.edg.io,Unknown or no WAF detected
+edg.io,Edgio WAF
+investors.edg.io,None
+stage.edg.io,None

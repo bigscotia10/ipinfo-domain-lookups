@@ -5,7 +5,7 @@ const dns = require('dns');
 const axios = require('axios');
 const csvParser = require('csv-parser');
 
-const inputFile = 'input.csv';
+const inputFile = 'domains.csv';
 
 function removeHttpProtocol(url) {
   const cleanedUrl = url.replace(/^(https?:\/\/)/, '');
@@ -52,12 +52,13 @@ const lookupA = (domain) => {
 const getIPinfo = async (ip) => {
   try {
     const response = await axios.get(`https://ipinfo.io/${ip}/json?token=${ipInfoToken}`);
-    return response.data;
+    return response.data.org.replace(/AS\d+\s*/, '').replace(/"/g, '');
   } catch (error) {
     console.error(`Error fetching IPinfo for ${ip}:`, error.message);
-    return null;
+    return 'None Found';
   }
 };
+
 
 const main = async () => {
   const domains = await getDomainsFromCSV();
@@ -72,24 +73,27 @@ const main = async () => {
       console.log(aRecords.join(', '));
 
       for (const ip of aRecords) {
-        const ipInfo = await getIPinfo(ip);
-        if (ipInfo && !domainOrgMap[domain]) {
-          const orgWithoutAS = ipInfo.org.replace(/AS\d+\s*/, '');
+        const orgWithoutAS = await getIPinfo(ip);
+        if (orgWithoutAS && !domainOrgMap[domain]) {
           console.log(`IPinfo "org" for ${ip}: ${orgWithoutAS}`);
           domainOrgMap[domain] = orgWithoutAS;
         }
       }
+
     } catch (error) {
       console.error(`Error fetching A records for ${domain}:`, error.message);
+      domainOrgMap[domain] = 'None Found';
     }
   }
 
   let csvData = "Domain,Org\n";
   for (const [domain, org] of Object.entries(domainOrgMap)) {
-    csvData += `${domain},"${org}"\n`;
+    const orgWithoutAS = org.replace(/AS\d+\s*/, '').replace(/,/g, '');
+    //csvData += `${domain},${orgWithoutAS}\n`;
+    csvData += `${orgWithoutAS}\n`;
   }
 
-  fs.writeFile("output.csv", csvData, (err) => {
+  fs.writeFile("hosting.csv", csvData, (err) => {
     if (err) {
       console.error("Error writing CSV file:", err.message);
     } else {
