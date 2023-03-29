@@ -1,3 +1,4 @@
+// Remember to add your .env file and add your token to it.
 require('dotenv').config();
 
 const fs = require('fs');
@@ -7,11 +8,13 @@ const csvParser = require('csv-parser');
 
 const inputFile = 'domains.csv';
 
+// Format it and remove http and https
 function removeHttpProtocol(url) {
   const cleanedUrl = url.replace(/^(https?:\/\/)/, '');
   return `${cleanedUrl}`;
 }
 
+// Grab content from CSV and return a cleaned up array of domains
 function getDomainsFromCSV() {
   return new Promise((resolve) => {
     let rowIndex = 0;
@@ -22,7 +25,7 @@ function getDomainsFromCSV() {
       .on('data', (row) => {
         rowIndex++;
 
-        // Skip the header row
+        // Skip the header
         if (rowIndex === 1) {
           return;
         }
@@ -37,9 +40,11 @@ function getDomainsFromCSV() {
   });
 }
 
+// I'm using the .env, but if you'd prefer to just add your token directly here, just comment out the line under the commented out area and add this one instead:
 // const ipInfoToken = 'ADD TOKEN'; // Replace with your IPinfo API token
 const ipInfoToken = process.env.IPINFO_TOKEN;
 
+// use the lookupA function
 const lookupA = (domain) => {
   return new Promise((resolve, reject) => {
     dns.resolve4(domain, (error, records) => {
@@ -49,6 +54,7 @@ const lookupA = (domain) => {
   });
 };
 
+// use the ipinfo API end point
 const getIPinfo = async (ip) => {
   try {
     const response = await axios.get(`https://ipinfo.io/${ip}/json?token=${ipInfoToken}`);
@@ -59,7 +65,7 @@ const getIPinfo = async (ip) => {
   }
 };
 
-
+// get the domains and log the results
 const main = async () => {
   const domains = await getDomainsFromCSV();
 
@@ -86,6 +92,7 @@ const main = async () => {
     }
   }
 
+  // format the CSV so it just shows the org
   let csvData = "Domain,Org\n";
   for (const [domain, org] of Object.entries(domainOrgMap)) {
     const orgWithoutAS = org.replace(/AS\d+\s*/, '').replace(/,/g, '');
@@ -93,6 +100,7 @@ const main = async () => {
     csvData += `${orgWithoutAS}\n`;
   }
 
+  // output it to the hosting.csv file
   fs.writeFile("hosting.csv", csvData, (err) => {
     if (err) {
       console.error("Error writing CSV file:", err.message);
