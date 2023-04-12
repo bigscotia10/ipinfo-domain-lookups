@@ -20,4 +20,4 @@ If you want to use the other script to grab the subdomains, you can use it like 
 11. This takes the domains.csv file and outputs the results into hosting.csv
 
 ## TODO:
-1. The waf.js script is a work in progress. My goal is to quickly itterate over all the subdomains to get WAF yes/no and what WAF is if found. I need to do more research on best approaches, right now it's just using lots of if statements.
+The waf.js script is a work in progress. My goal is to quickly itterate over all the subdomains to get WAF yes/no and what WAF is if found. I need to do more research on best approaches, right now it's just using lots of if statements.
