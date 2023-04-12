@@ -103,9 +103,9 @@ const main = async () => {
   // output it to the hosting.csv file
   fs.writeFile("hosting.csv", csvData, (err) => {
     if (err) {
-      console.error("Error writing CSV file:", err.message);
+      console.error("Error writing hosting.csv file:", err.message);
     } else {
-      console.log("\nCSV file successfully saved.");
+      console.log("\nhosting.csv file successfully saved.");
     }
   });
 };
