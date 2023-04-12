@@ -4,9 +4,9 @@ The script looks up the IP's for the list of domains in your input.csv file (fir
 
 ## IP Lookup
 1. Clone locally: ```git clone https://github.com/bigscotia10/ipinfo-domain-lookups```
-2. Install the following dependencies: ```npm install fs dns axios csv-parser```
+2. Install the following dependencies: ```npm install fs dns axios csv-parser dotenv```
 3. Replace ```input.csv``` file with your WSRA output .csv file and ensure it is named ```input.csv``` 
-4. Add a local .env file ```touch .env``` add the following to it: IPINFO_TOKEN=YOUR_TOKEN (Get a free API Token here: https://ipinfo.io/)
+4. Add a local .env file ```touch .env``` add the following to it: ```IPINFO_TOKEN=YOUR_TOKEN``` (Get a free API Token here: https://ipinfo.io/)
 5. Run: ```node hosting.js```
 6. Your results are output to output.csv
 
