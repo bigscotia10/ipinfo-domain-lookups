@@ -1,6 +1,6 @@
 # IPinfo Domain Lookups 🕸️🕵️
 
-The script looks up the IP's for a list of provided domains in the domains.csv file, it uses domain data from the first column to find the IP address and then looksup the hosting provider which is output to hosting.csv.
+The script looks up the IP's for a list of provided domains, it uses data from the first column of the domains.csv to find the IP address and then the hosting provider which is output to the file hosting.csv.
 
 ## Hosting Lookup
 1. Clone this repositry to run locally: ```git clone https://github.com/bigscotia10/ipinfo-domain-lookups```
