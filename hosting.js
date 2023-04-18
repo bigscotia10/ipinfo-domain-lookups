@@ -6,6 +6,7 @@ const dns = require('dns');
 const axios = require('axios');
 const csvParser = require('csv-parser');
 
+// Rename your file to domains.csv OR update the following:
 const inputFile = 'domains.csv';
 
 // Format it and remove http and https

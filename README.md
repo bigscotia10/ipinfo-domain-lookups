@@ -20,3 +20,6 @@ If you want to use the domains script to lookup subdomains, you can use it like 
 
 ## TODO:
 The waf.js script is a work in progress. My goal is to quickly itterate over all the subdomains to get WAF yes/no and what WAF is if found. I need to do more research on best approaches, right now it's just using lots of if statements.
+
+## FOR PYTHON VERSION:
+Run the following: pip install python-dotenv requests (Make sure to add your .env file for your API Key)
